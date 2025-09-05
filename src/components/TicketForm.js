@@ -1,0 +1,79 @@
+import React, { useState } from "react";
+
+const TicketForm = () => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState("1");
+
+  const priorityLabels = {
+    1: "Low",
+    2: "Medium",
+    3: "High",
+  };
+
+  const clearForm = () => {
+    setTitle("");
+    setDescription("");
+    setPriority("1");
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault(); // avoid page reloading
+
+    const ticketData = {
+      id: new Date().toISOString(),
+      title,
+      description,
+      priority,
+    };
+    console.log(ticketData);
+
+    clearForm();
+  };
+  return (
+    <div>
+      <h1>This is Ticket Form</h1>
+      <form className="ticket-form" onSubmit={handleSubmit}>
+        <div>
+          <label>Title</label>
+          <input
+            type="text"
+            value={title}
+            className="form-input"
+            onChange={(e) => setTitle(e.target.value)}
+          ></input>
+        </div>
+        <div>
+          <label>Title</label>
+          <textarea
+            type="text"
+            value={description}
+            className="form-input"
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
+        </div>
+
+        <fieldset className="priority-fieldset">
+          <legend>Priority</legend>
+          {Object.entries(priorityLabels).map(([value, label]) => (
+            <label key={value} className="priority-label">
+              {label}
+              <input
+                type="radio"
+                value={value}
+                checked={priority === value}
+                className="priority-input"
+                onChange={(e) => setPriority(e.target.value)}
+              ></input>
+            </label>
+          ))}
+        </fieldset>
+
+        <button type="submit" className="button">
+          Sumbit
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default TicketForm;
