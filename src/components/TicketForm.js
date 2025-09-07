@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TicketForm = () => {
+const TicketForm = ({ dispatch }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("1");
@@ -25,7 +25,11 @@ const TicketForm = () => {
       description,
       priority,
     };
-    console.log(ticketData);
+    //console.log(ticketData);
+    dispatch({
+      type: "ADD_TICKET",
+      payload: ticketData,
+    });
 
     clearForm();
   };
