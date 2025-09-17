@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const TicketForm = ({ dispatch }) => {
+const TicketForm = ({ dispatch, editingTicket }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("1");
+
+  useEffect(() => {
+    if (editingTicket) {
+      setTitle(editingTicket.title);
+      setDescription(editingTicket.description);
+      setPriority(editingTicket.priority);
+    } else {
+      clearForm();
+    }
+  }, [editingTicket]);
 
   const priorityLabels = {
     1: "Low",
@@ -20,17 +30,25 @@ const TicketForm = ({ dispatch }) => {
     e.preventDefault(); // avoid page reloading
 
     const ticketData = {
-      id: new Date().toISOString(),
+      id: editingTicket ? editingTicket.id : new Date().toISOString(),
       title,
       description,
       priority,
     };
     //console.log(ticketData);
     dispatch({
-      type: "ADD_TICKET",
+      type: editingTicket ? "UPDATE_TICKET" : "ADD_TICKET",
       payload: ticketData,
     });
 
+    if (editingTicket) {
+      dispatch({ type: "CLEAR_EDITING_TICKET" });
+    }
+
+    clearForm();
+  };
+  const handleCancel = () => {
+    dispatch({ type: "CLEAR_EDITING_TICKET" });
     clearForm();
   };
   return (
@@ -47,7 +65,7 @@ const TicketForm = ({ dispatch }) => {
           ></input>
         </div>
         <div>
-          <label>Title</label>
+          <label>Description</label>
           <textarea
             type="text"
             value={description}
@@ -75,6 +93,11 @@ const TicketForm = ({ dispatch }) => {
         <button type="submit" className="button">
           Sumbit
         </button>
+        {editingTicket && (
+          <button className="button" onClick={handleCancel}>
+            CancelEdit
+          </button>
+        )}
       </form>
     </div>
   );
